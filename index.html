@@ -1,0 +1,37 @@
+<html>
+<head>
+<script src="https://aframe.io/releases/0.4.0/aframe.min.js"></script>
+<script type="text/javascript" src="nxbrowser.js"></script>
+</head>
+
+<body onload="initBrowser()">
+<input type="button" id="btnUp" value="Up" />
+<input type="button" id="btnDown" value="Down" />
+
+<a-scene id="nxbrowser" debug>
+    
+    <a-entity id="viewPanel" rotation="0 -5 0" position="2 1.5 -4"  width="5" height="7" depth="0.2" color="#4CC3D9">
+
+       <a-box id="assetTemplate" position="0 0 0"  width="0.8" height="0.8" depth="0.1" color="#FF0000">
+        <a-animation begin="moveUp" fill="none" direction="normal" dur="500" attribute="position" ></a-animation>
+
+        <a-animation begin="moveDown"  fill="none" direction="normal" dur="500"  attribute="position" ></a-animation>
+
+       </a-box>
+
+    </a-entity>
+    
+    <a-box id="nav" rotation="0 15 0" position="-3 1.5 -4"  width="2.5" height="5" depth="0.2" color="#FF0000">        <a-animation id="navAnim" begin="moveUp" fill="none" direction="normal" dur="500" attribute="position"    from="-3 1.5 -4" to="-3 5 -4"></a-animation>
+      
+    </a-box>
+
+    <a-sky color="#ECECEC"></a-sky>
+
+</a-scene>
+
+<script type="text/javascript">
+
+</script>
+</body>
+
+</html>
