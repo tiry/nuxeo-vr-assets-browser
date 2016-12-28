@@ -11,10 +11,10 @@ function initBrowser() {
     displayPannel.build();
     displayPannel.update();
 
-    document.getElementById("btnUp").addEventListener("click", function() {
+    document.getElementById("upArrow").addEventListener("click", function() {
         displayPannel.moveUp()
     });
-    document.getElementById("btnDown").addEventListener("click", function() {
+    document.getElementById("downArrow").addEventListener("click", function() {
         displayPannel.moveDown()
     });
 
