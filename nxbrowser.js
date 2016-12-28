@@ -57,14 +57,14 @@ function DisplayPannel() {
                                               from: "0",
                                               to: "0",
                                               dur: "500",
-                                              fill: "backward",
-                                              begin: "moveUp"});
+                                              fill: "backwards",
+                                              begin: "moveUpFade"});
                     mkAnim(asset,{attribute: "material.opacity",
                                               from: "0",
                                               to: "100",
                                               dur: "500",
-                                              fill: "backward",
-                                              begin: "moveDown"});
+                                              fill: "backwards",
+                                              begin: "moveDownFade"});
                 } else if (j == this.maxY - 1) {
                     // top visible row
                     // should hide on moveUp
@@ -75,15 +75,15 @@ function DisplayPannel() {
                                               from: "100",
                                               to: "0",
                                               dur: "500",
-                                              fill: "backward",
-                                              begin: "moveUp"});
+                                              fill: "backwards",
+                                              begin: "moveUpFade"});
                     mkAnim(asset,{attribute: "material.opacity",
                                               from: "100",
                                               to: "100",
                                               dur: "500",
-                                              fill: "backward",
-                                              begin: "moveDown"});
-                } else if (j == 2) {
+                                              fill: "backwards",
+                                              begin: "moveDownFade"});
+                } else if (j == 1){
                     // last visible row
                     // should hide on moveDown
                     // visible on moveUp
@@ -93,15 +93,15 @@ function DisplayPannel() {
                                               from: "100",
                                               to: "100",
                                               dur: "500",
-                                              fill: "backward",
-                                              begin: "moveUp"});
+                                              fill: "backwards",
+                                              begin: "moveUpFade"});
                     mkAnim(asset,{attribute: "material.opacity",
-                                              from: "0",
-                                              to: "100",
+                                              from: "100",
+                                              to: "0",
                                               dur: "500",
-                                              fill: "forward",
-                                              begin: "moveDown"});
-                } else if (j == 1) {
+                                              fill: "backwards",
+                                              begin: "moveDownFade"});
+                } else if (j == 0) {
                     // bottom margin
                     // hidden on moveDown
                     // should appear on moveUp
@@ -111,14 +111,15 @@ function DisplayPannel() {
                                               from: "0",
                                               to: "100",
                                               dur: "500",
-                                              fill: "backward",
-                                              begin: "moveUp"});
+                                              direction: "normal",
+                                              fill: "backwards",
+                                              begin: "moveUpFade"});
                     mkAnim(asset,{attribute: "material.opacity",
                                               from: "0",
                                               to: "0",
                                               dur: "500",
-                                              fill: "forward",
-                                              begin: "moveDown"});
+                                              fill: "forwards",
+                                              begin: "moveDownFade"});
                 }
 
                 asset.setAttribute("class", assetClass);
@@ -161,7 +162,6 @@ function DisplayPannel() {
     }
 
     this.bindData = function() {
-        //console.log(dataOffset);
         var docOffset = dataOffset - 5;
         for (var j = this.maxY - 1; j >= 0; j--) {
             for (var i = 0; i < this.maxX; i++) {
@@ -170,8 +170,14 @@ function DisplayPannel() {
                 if (docOffset >= 0 && docOffset < data.length) {
                     asset.setAttribute("color", data[docOffset].color);
                 } else {
+                    // off grid values
                     asset.setAttribute("color", "#FFFFFF");
-                    //asset.setAttribute("material",{"opacity":"0"})
+                }
+                if (j==0 || j==this.maxY-1) {
+                  asset.setAttribute("material",{"opacity":"0"})  
+                } else {
+                  // this should not be needed
+                  asset.setAttribute("material",{"opacity":"100"})
                 }
                 docOffset++;
             }
@@ -186,6 +192,7 @@ function DisplayPannel() {
     this.moveUp = function() {
         for (var block of document.querySelectorAll(".viewBlock")) {
             this.itemToMove++;
+            block.emit("moveUpFade");
             block.emit("moveUp");
         }
     }
@@ -193,6 +200,7 @@ function DisplayPannel() {
     this.moveDown = function() {
         for (var block of document.querySelectorAll(".viewBlock")) {
             this.itemToMove++;
+            block.emit("moveDownFade");
             block.emit("moveDown");
         }
     }
@@ -208,6 +216,13 @@ function DisplayPannel() {
                     dataOffset = dataOffset - 5;             
                 }
                 this.bindData();
+                /*var o3D = document.querySelector('viewPanel').object3D;
+                var that = this.
+                o3D.onBeforeRender = function() {
+                    alert("yo!");
+                    that.bindData();
+                    o3D.onBeforeRender = function(){};
+                }*/
             }
         }
     }
