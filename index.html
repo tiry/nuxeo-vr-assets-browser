@@ -9,7 +9,24 @@
 <input type="button" id="btnDown" value="Down" />
 
 <a-scene id="nxbrowser">
+
+  <a-assets>
+     <img id="nuxeo-logo" src="img/nuxeo.png">
+  </a-assets>
     
+    <a-entity camera look-controls>
+        <a-entity cursor="fuse: true; fuseTimeout: 2000"
+            position="0 0 -1"
+            raycaster="far: 20;"
+            geometry="primitive: ring; radiusInner: 0.05; radiusOuter: 0.08""
+            material="color: grey; shader: flat">
+            <a-animation begin="click" easing="ease-in" attribute="scale"
+               fill="backwards" from="0.4 0.4 0.4" to="1 1 1"></a-animation>
+            <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale"
+               fill="forwards" from="1 1 1" to="0.4 0.4 0.4"></a-animation>
+        </a-entity>
+    </a-entity>
+
     <a-entity id="viewPanel" rotation="0 -5 0" position="2 1.5 -4"  width="5" height="7" depth="0.2" color="#4CC3D9">
 
        <a-box id="assetTemplate" position="0 0 0"  width="0.8" height="0.8" depth="0.1" color="#FF0000">

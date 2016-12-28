@@ -173,12 +173,18 @@ function DisplayPannel() {
                     // off grid values
                     asset.setAttribute("color", "#FFFFFF");
                 }
+
+                var material = {};
+                material.src = "#nuxeo-logo";
+
                 if (j==0 || j==this.maxY-1) {
-                  asset.setAttribute("material",{"opacity":"0"})  
-                } else {
+                  material.opacity="0";  
+                } else {                    
                   // this should not be needed
-                  asset.setAttribute("material",{"opacity":"100"})
+                  material.opacity="100";
                 }
+                asset.setAttribute("material",material)
+
                 docOffset++;
             }
         }
