@@ -196,6 +196,8 @@ function DisplayPannel(provider) {
                     this.dataOffset =  this.dataOffset  - 5;             
                 }
                 this.update();
+                var o3D = document.querySelector('#viewPanel').object3D;
+                console.log(o3D);
                 /*var o3D = document.querySelector('viewPanel').object3D;
                 var that = this.
                 o3D.onBeforeRender = function() {
