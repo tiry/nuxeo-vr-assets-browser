@@ -1,15 +1,21 @@
 
 
+var provider;
+
 function initBrowser() {
 
-    var provider = new NuxeoProvider();
-    provider.fetch();
-
     var browser = document.querySelector("#nxbrowser");
+    
+    provider = new NuxeoProvider();
+    
     var displayPannel = new DisplayPannel(provider);
-
     displayPannel.build();
-    displayPannel.update();
+    provider.setCB(function(){displayPannel.update();});
+
+    provider.init(function() {
+        provider.fetch();
+        displayPannel.update();        
+    })
 
     document.getElementById("upArrow").addEventListener("click", function() {
         displayPannel.moveUp()

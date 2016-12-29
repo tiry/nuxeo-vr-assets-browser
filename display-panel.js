@@ -142,6 +142,7 @@ function DisplayPannel(provider) {
 
     this.update = function() {
         var data = provider.documents();
+        console.log("data.length=" + data.length);
         var docOffset = this.dataOffset - 5;
         for (var j = this.maxY - 1; j >= 0; j--) {
             for (var i = 0; i < this.maxX; i++) {
@@ -149,8 +150,10 @@ function DisplayPannel(provider) {
                 var asset = this.getAsset(i,j);                
                 var material = {};
                 if (docOffset >= 0 && docOffset < data.length) {
-                    asset.setAttribute("color", data[docOffset].color);
-                    material.src = data[docOffset].thumb;
+                    //asset.setAttribute("color", data[docOffset].color);
+
+                    material.src = data[docOffset].thumbnail;
+                    console.log(material.src);
                 } else {
                     // off grid values
                     asset.setAttribute("color", "#FFFFFF");
