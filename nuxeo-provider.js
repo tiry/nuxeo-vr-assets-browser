@@ -3,8 +3,10 @@ function NuxeoProvider() {
 
     this._documents = [];
 
+   var servername = window.location.hostname;
+
     this.nuxeo = new Nuxeo({
-      baseURL: 'http://127.0.0.1:8080/nuxeo',
+      baseURL: 'http://' + servername + ':8080/nuxeo',
           auth: {
             method: 'basic',
             username: 'Administrator',
@@ -59,7 +61,6 @@ function NuxeoProvider() {
         .then(function(res) {
             var docs=[];
             for (var i=0; i < res.entries.length; i++) {
-                console.log(res.entries[i]);
                 docs.push({
                     thumbnail: res.entries[i].contextParameters.thumbnail.url + "?token=" + me.token,
                     title: res.entries[i].title,
@@ -69,7 +70,6 @@ function NuxeoProvider() {
             me._documents = docs;
             me._aggregates = res.aggregates;
             console.log("data received! : " + me._documents.length);
-            console.log(me._documents);
             if (me.cb) {
                 me.cb();
             }})
