@@ -132,9 +132,43 @@ function DisplayPannel(provider) {
         asset.addEventListener("animationend", function(evt) {
             me.moveEnded(evt)
         });
+        asset.addEventListener("click", function(evt) {            
+            me.zoom(evt, evt.srcElement);
+        });
 
     }
    
+    this.zoom = function(evt, asset) {        
+        var zoom = document.querySelector('#' + "zoom_" + asset.id);
+        if (zoom) {
+           console.log("already there ! -- exit");
+           return;
+        }
+
+        var zoomTemplate = document.querySelector('#zoomViewTemplate');
+        zoom = zoomTemplate.cloneNode(true);
+
+        var me = this;
+        var aniUp = asset.querySelector('a-animation[begin="moveUp"]')
+        var from = aniUp.getAttribute("from");
+        var to = aniUp.getAttribute("to");
+        zoom.setAttribute("position", from);
+        zoom.id = "zoom_" + asset.id;
+        zoom.querySelector('a-animation[begin="show"][attribute="position"]').setAttribute("from", from);        
+        this.viewPanel.appendChild(zoom);
+        zoom.querySelector('a-cylinder').id="close_zoom_" + asset.id;
+
+        zoom.querySelector('a-cylinder').addEventListener("click", function(evt) {
+          me.viewPanel.remove(zoom);
+        });
+        
+        zoom.addEventListener("animationend", function(evt) {
+          zoom.querySelector('a-cylinder').setAttribute("material","src:#btnClose; opacity:1");  
+          // XXX attach handler class to do the display of the document
+        });
+        zoom.emit("show");
+    }
+
     this.getAsset = function (x,y) {
             //return document.getElementById("asset_" + i + "-" + j);
             return this.assets[x + "-" + y];
@@ -142,7 +176,7 @@ function DisplayPannel(provider) {
 
     this.update = function() {
         var data = provider.documents();
-        console.log("data.length=" + data.length);
+        //console.log("data.length=" + data.length);
         var docOffset = this.dataOffset - 5;
         for (var j = this.maxY - 1; j >= 0; j--) {
             for (var i = 0; i < this.maxX; i++) {
@@ -153,7 +187,7 @@ function DisplayPannel(provider) {
                     //asset.setAttribute("color", data[docOffset].color);
 
                     material.src = data[docOffset].thumbnail;
-                    console.log(material.src);
+                    //console.log(material.src);
                 } else {
                     // off grid values
                     asset.setAttribute("color", "#FFFFFF");
@@ -200,7 +234,7 @@ function DisplayPannel(provider) {
                 }
                 this.update();
                 var o3D = document.querySelector('#viewPanel').object3D;
-                console.log(o3D);
+                //console.log(o3D);
                 /*var o3D = document.querySelector('viewPanel').object3D;
                 var that = this.
                 o3D.onBeforeRender = function() {
