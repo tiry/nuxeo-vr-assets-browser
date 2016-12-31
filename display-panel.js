@@ -8,6 +8,8 @@ function mkAnim(node, props) {
 
 function DisplayPannel(provider) {
 
+    this.provider=provider;
+
     this.viewPanel = document.querySelector("#viewPanel");
     this.assetTemplate = document.querySelector("#assetTemplate");
 
@@ -15,11 +17,9 @@ function DisplayPannel(provider) {
     this.maxY = parseInt(this.viewPanel.attributes.height.value);
 
     this.itemToMove = 0;
-
     this.assets={};
-    this.provider=provider;
-
     this.dataOffset = 0;
+    this.zoomViewCtrl = new ZoomView();
 
     this.build = function() {
 
@@ -133,42 +133,10 @@ function DisplayPannel(provider) {
             me.moveEnded(evt)
         });
         asset.addEventListener("click", function(evt) {            
-            me.zoom(evt, evt.srcElement);
+            me.zoomViewCtrl.setup(me.viewPanel,evt.srcElement);
         });
-
     }
    
-    this.zoom = function(evt, asset) {        
-        var zoom = document.querySelector('#' + "zoom_" + asset.id);
-        if (zoom) {
-           console.log("already there ! -- exit");
-           return;
-        }
-
-        var zoomTemplate = document.querySelector('#zoomViewTemplate');
-        zoom = zoomTemplate.cloneNode(true);
-
-        var me = this;
-        var aniUp = asset.querySelector('a-animation[begin="moveUp"]')
-        var from = aniUp.getAttribute("from");
-        var to = aniUp.getAttribute("to");
-        zoom.setAttribute("position", from);
-        zoom.id = "zoom_" + asset.id;
-        zoom.querySelector('a-animation[begin="show"][attribute="position"]').setAttribute("from", from);        
-        this.viewPanel.appendChild(zoom);
-        zoom.querySelector('a-cylinder').id="close_zoom_" + asset.id;
-
-        zoom.querySelector('a-cylinder').addEventListener("click", function(evt) {
-          me.viewPanel.remove(zoom);
-        });
-        
-        zoom.addEventListener("animationend", function(evt) {
-          zoom.querySelector('a-cylinder').setAttribute("material","src:#btnClose; opacity:1");  
-          // XXX attach handler class to do the display of the document
-        });
-        zoom.emit("show");
-    }
-
     this.getAsset = function (x,y) {
             //return document.getElementById("asset_" + i + "-" + j);
             return this.assets[x + "-" + y];
