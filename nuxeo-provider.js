@@ -1,19 +1,29 @@
 
-function NuxeoProvider() {
+function NuxeoProvider(username,password,url) {
 
     this._documents = [];
 
-   var servername = window.location.hostname;
+   if(!url) {
+      var servername = window.location.hostname;
+      url='http://' + servername + ':8080/nuxeo';
+   }
+   if (!username) {
+      username = 'Administrator';
+   }
+   if (!password) {
+      password = 'Administrator';
+   }
 
     this.nuxeo = new Nuxeo({
-      baseURL: 'http://' + servername + ':8080/nuxeo',
+      baseURL: url,
           auth: {
             method: 'basic',
-            username: 'Administrator',
-            password: 'Administrator'
+            username: username,
+            password: password
           },
         });
 
+   this.baseURL = url;
    this.nuxeo.schemas("*");
    this.nuxeo.enricher("document", "preview");
    this.nuxeo.enricher("document", "thumbnail");
@@ -27,7 +37,11 @@ function NuxeoProvider() {
             me.nuxeo.requestAuthenticationToken('nuxeo-vr', uniqueDeviceId, 'Browse Assets in VR', 'r')
              .then(function(token) {
                 me.token=token;
-                continueCB();
+                 var d = new Date();
+                 //d.setTime(d.getTime() + (24*60*60*1000));
+                 //var expires = "expires="+ d.toUTCString();
+                 //document.cookie = "X-Authentication-Token=" + token + ";" + expires + ";path=/";
+                 continueCB();
             });
        }).catch(function(error) {
             console.log("You either supplied a wrong login / password,");
@@ -57,15 +71,29 @@ function NuxeoProvider() {
        this._documents = [];
        var me = this;
 
-       this.nuxeo.request("query/default_search").queryParams({pageSize:100}).get()
+       this.nuxeo.request("query/vr_search").queryParams({pageSize:100}).get()
         .then(function(res) {
             var docs=[];
             for (var i=0; i < res.entries.length; i++) {
-                docs.push({
+                var doc = {
                     thumbnail: res.entries[i].contextParameters.thumbnail.url + "?token=" + me.token,
                     title: res.entries[i].title,
-                    uuid: res.entries[i].uuid
-                })
+                    uid: res.entries[i].uid,
+                    type: res.entries[i].type,
+                    blob: me.baseURL + '/api/v1/id/' + res.entries[i].uid +'/@blob/file:content' + "?token=" + me.token                    
+                };
+                if (res.entries[i].type=='Picture') {
+                  doc.view = me.baseURL + '/api/v1/id/' + res.entries[i].uid +'/@rendition/Medium' + "?token=" + me.token;
+                }
+                else if (res.entries[i].type=='Video') {
+                  doc.view = me.baseURL + '/api/v1/id/' + res.entries[i].uid + '/@rendition/WebM%20480p' + "?token=" + me.token; 
+                }
+                else if (res.entries[i].type=='ThreeD') {
+                  doc.view = me.baseURL + '/api/v1/id/' + res.entries[i].uid + '/@rendition/isometric' + "?token=" + me.token;                   
+                } else {
+                  doc.view = doc.thumbnail;
+                }
+                docs.push(doc);
             }
             me._documents = docs;
             me._aggregates = res.aggregates;

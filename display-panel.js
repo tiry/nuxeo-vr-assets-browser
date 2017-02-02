@@ -6,6 +6,20 @@ function mkAnim(node, props) {
     node.appendChild(anim);
 }
 
+function updateAssetElement(i,j, src) {
+    //document.querySelectorAll("a-assets>img");
+    var id = "assetResource" + i + '-' +j;
+    var img = document.getElementById(id);
+    if (!img) {
+        img = document.createElement("img");
+        img.id=id;    
+        img.setAttribute("id", id);
+        document.querySelector("a-assets").appendChild(img);
+    }
+    img.setAttribute("src", src);
+    return img;
+}
+
 function DisplayPannel(provider) {
 
     this.provider=provider;
@@ -21,10 +35,17 @@ function DisplayPannel(provider) {
     this.dataOffset = 0;
     this.zoomViewCtrl = new ZoomView();
 
+    this.useAssetElement = true;
+
+    //THREE.ImageUtils.crossOrigin = '';
+
     this.build = function() {
 
         for (var j = this.maxY - 1; j >= 0; j--) {
             for (var i = 0; i < this.maxX; i++) {
+                if (this.useAssetElement) {
+                  updateAssetElement(i,j);
+                }
                 var asset = this.assetTemplate.cloneNode(true);
                 var assetClass = "viewBlock";
 
@@ -154,7 +175,13 @@ function DisplayPannel(provider) {
                 if (docOffset >= 0 && docOffset < data.length) {
                     //asset.setAttribute("color", data[docOffset].color);
 
-                    material.src = data[docOffset].thumbnail;
+                    if (this.useAssetElement) {
+                      var texture=updateAssetElement(i,j,data[docOffset].thumbnail);
+                      material.src = "#"+texture.id;
+                    } else {
+                      material.src = data[docOffset].thumbnail;  
+                    }
+
                     //console.log(material.src);
                 } else {
                     // off grid values
@@ -169,6 +196,7 @@ function DisplayPannel(provider) {
                   material.opacity="100";
                 }
                 asset.setAttribute("material",material)
+                asset.nuxeo_document=data[docOffset];
                 docOffset++;
             }
         }

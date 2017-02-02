@@ -6,7 +6,8 @@ function initBrowser() {
 
     var browser = document.querySelector("#nxbrowser");
     
-    provider = new NuxeoProvider();
+    //provider = new NuxeoProvider("Administrator", "Nuxeo2015","http://dam-vr.cloud.nuxeo.com/nuxeo/");
+    provider = new NuxeoProvider("Administrator", "Administrator","http://127.0.0.1:8080/nuxeo");
     
     var displayPannel = new DisplayPannel(provider);
     displayPannel.build();
