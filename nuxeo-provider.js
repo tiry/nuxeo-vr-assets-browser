@@ -96,8 +96,8 @@ function NuxeoProvider(username,password,url) {
                 docs.push(doc);
             }
             me._documents = docs;
-            me._aggregates = res.aggregates;
-            console.log("data received! : " + me._documents.length);
+            me._aggregates = res.aggregations;
+            console.log(res);
             if (me.cb) {
                 me.cb();
             }})

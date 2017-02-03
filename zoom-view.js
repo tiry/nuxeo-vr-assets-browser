@@ -31,6 +31,8 @@ function ZoomView() {
         zoom.addEventListener("animationend", function(evt) {
             zoom.querySelector('a-cylinder').setAttribute("material","src:#btnClose; opacity:1");
         });
+
+
         this.displayAsset(asset, zoom);
         zoom.emit("show");
     }
@@ -38,6 +40,7 @@ function ZoomView() {
     this.displayAsset = function(asset, zoom) {
         var material = {};
         var doc = asset.nuxeo_document;
+        zoom.querySelector('a-entity').setAttribute("text", "size:0.15;text:" + doc.title);
         material.src = doc.view;
         if (doc.type=='ThreeD') {
            zoom.setAttribute("collada-model",doc.blob ); 
